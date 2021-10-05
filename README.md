@@ -6,13 +6,14 @@ Simple script to run a Discord bot that displays the floor price of an NFT colle
 
 ## Requirements
 - [Discord Bot & Token](https://www.writebots.com/discord-bot-token/) 
+- Python >= 3.8
 
 ## Permissions
 Invite the bot into your Discord server and ensure it has a role with the following permissions: 
 - View Channels
 - Change Nickname
 
-## Quick Installation
+## Setup
 
 1. Clone the repository: `git clone https://github.com/chillerno1/discord-nft-satellite`
 2. cd into directory: `cd discord-nft-satellite`

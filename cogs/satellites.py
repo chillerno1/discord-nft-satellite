@@ -3,7 +3,7 @@ import asyncio
 import logging
 
 from typing import Union
-from models.nft import NFTPrice
+from models.opensea import FloorPrice
 from discord.ext import commands, tasks
 from discord import Activity, ActivityType
 
@@ -11,7 +11,7 @@ from discord import Activity, ActivityType
 log = logging.getLogger(__name__)
 
 
-async def get_opensea_floor_price(url: str, alias: str) -> Union[NFTPrice, bool]:
+async def get_opensea_floor_price(url: str, alias: str) -> Union[FloorPrice, bool]:
 
     """Quries the API endpoint of an NFT on OpenSea and parses the response to retrieve the floor price of the
     collection it belongs to.
@@ -37,7 +37,7 @@ async def get_opensea_floor_price(url: str, alias: str) -> Union[NFTPrice, bool]
                 content = await response.json()
                 if content:
                     price = content['collection']['stats']['floor_price']
-                    return NFTPrice(source="OpenSea", price=f"{price} ETH", project=alias)
+                    return FloorPrice(source=source, price=f"{price} ETH", project=alias)
     except Exception as error:
         log.error(f"[ENDPOINT] [{source}] API response was invalid {error}.")
     return False
@@ -85,9 +85,13 @@ class NFT(commands.Cog):
 
         log.info(f"[UPDATE] [{self.bot_type}] - [{guild}] - [{self.alias}] Nickname: {self.price} Activity: {self.status}")
 
-    async def get_nft_floor_price(self) -> bool:
+    async def update_nft_floor_price(self) -> bool:
 
-        """Fetches latest NFT price from sources to update the price and status attributes."""
+        """Fetches latest NFT price from sources to update the price and status attributes.
+
+        :returns: bool
+            True if successful else False
+        """
 
         nft_floor_price = await get_opensea_floor_price(url=self.url, alias=self.alias)
 
@@ -115,7 +119,7 @@ class NFT(commands.Cog):
         """
 
         self.member_of_guilds = [guild.id for guild in self.bot.guilds]
-        valid_response = await self.get_nft_floor_price()
+        valid_response = await self.update_nft_floor_price()
 
         if valid_response:
             await self.bot.change_presence(activity=Activity(type=ActivityType.watching, name=self.status))
@@ -133,7 +137,7 @@ class NFT(commands.Cog):
         log.info(f"[INIT] [{self.bot_type}] - [{self.alias}] Bot started successfully, active on {len(self.member_of_guilds)} servers.")
 
     def __str__(self):
-        return f"Discord NFTBot satellite for {self.alias}"
+        return f"Discord NFT satellite for {self.alias}"
 
     def __repr__(self):
         return f"<Discord NFT satellite for {self.alias}>"

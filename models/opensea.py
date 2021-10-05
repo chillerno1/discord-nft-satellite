@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class NFTPrice:
+class FloorPrice:
     source: str
     project: str
     price: str
