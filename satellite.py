@@ -27,7 +27,7 @@ if __name__ == '__main__':
                         '-u',
                         type=str,
                         required=True,
-                        help="OpenSea API URL of any NFT asset that belongs to the desired collection.")
+                        help="OpenSea API URL of any collection.")
 
     args = parser.parse_args()
 

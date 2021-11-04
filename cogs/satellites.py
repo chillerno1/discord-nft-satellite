@@ -13,16 +13,15 @@ log = logging.getLogger(__name__)
 
 async def get_opensea_floor_price(url: str, alias: str) -> Union[FloorPrice, bool]:
 
-    """Quries the API endpoint of an NFT on OpenSea and parses the response to retrieve the floor price of the
-    collection it belongs to.
+    """Queries the API endpoint of an NFT collection on OpenSea and parses the response to retrieve the floor price.
 
     .. note:
-        URL can be any asset in a given collection.
+        API endpoint of a collection, e.g. https://api.opensea.io/collection/boredapeyachtclub
     .. todo:
         Check the base currency of the floor price returned is always in ETH.
 
     :param url: str
-        URL of the asset to call.
+        URL of the collection to call.
     :param alias: str
         Name of the collection, i.e. BAYC.
     :returns:
@@ -40,6 +39,7 @@ async def get_opensea_floor_price(url: str, alias: str) -> Union[FloorPrice, boo
                     return FloorPrice(source=source, price=f"{price} ETH", project=alias)
     except Exception as error:
         log.error(f"[ENDPOINT] [{source}] API response was invalid {error}.")
+    log.error(f"[ENDPOINT] [{source}] API request did not return the expected response: {content}.")
     return False
 
 
