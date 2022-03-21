@@ -33,12 +33,13 @@ async def get_opensea_floor_price(url: str, alias: str) -> Union[FloorPrice, boo
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
-                content = await response.json()
+                content = await response.json(content_type=None)
                 if content:
                     price = content['collection']['stats']['floor_price']
                     return FloorPrice(source=source, price=f"{price} ETH", project=alias)
     except Exception as error:
         log.error(f"[ENDPOINT] [{source}] API response was invalid {error}.")
+        return False
     log.error(f"[ENDPOINT] [{source}] API request did not return the expected response: {content}.")
     return False
 
