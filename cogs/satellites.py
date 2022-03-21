@@ -39,6 +39,7 @@ async def get_opensea_floor_price(url: str, alias: str) -> Union[FloorPrice, boo
                     return FloorPrice(source=source, price=f"{price} ETH", project=alias)
     except Exception as error:
         log.error(f"[ENDPOINT] [{source}] API response was invalid {error}.")
+        return False
     log.error(f"[ENDPOINT] [{source}] API request did not return the expected response: {content}.")
     return False
 
